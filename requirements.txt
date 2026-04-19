@@ -6,3 +6,4 @@ mlflow>=2.5.0
 streamlit>=1.25.0
 openpyxl>=3.1.0
 plotly>=5.15.0
+gdown
