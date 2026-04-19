@@ -1,8 +1,3 @@
-"""
-Step 3: Model Development + Step 4: Experiment Tracking (MLflow-style)
-Real Estate Investment Advisor
-"""
-
 import pandas as pd
 import numpy as np
 import pickle
@@ -18,19 +13,12 @@ from sklearn.metrics import (accuracy_score, f1_score, confusion_matrix,
                              classification_report, mean_squared_error,
                              mean_absolute_error, r2_score)
 
-print("=" * 60)
-print("STEP 3: MODEL DEVELOPMENT")
-print("=" * 60)
 
-# ─────────────────────────────────────────
-# 1. LOAD PROCESSED DATA
-# ─────────────────────────────────────────
+
 df = pd.read_csv(r'C:\Users\SURYAPRAKASH JHA\Downloads\real_estate_project\real_estate_project\data\processed_data.csv')
 print(f"Loaded processed data: {df.shape}")
 
-# ─────────────────────────────────────────
-# 2. FEATURE SELECTION
-# ─────────────────────────────────────────
+
 FEATURES = [
     'BHK', 'Size_in_SqFt', 'Price_in_Lakhs', 'Floor_No', 'Total_Floors',
     'Age_of_Property', 'Nearby_Schools', 'Nearby_Hospitals',
@@ -52,9 +40,7 @@ y_reg   = df[TARGET_REG]
 print(f"\nFeatures: {len(FEATURES)}")
 print(f"Class balance: {y_class.value_counts().to_dict()}")
 
-# ─────────────────────────────────────────
-# 3. TRAIN/TEST SPLIT
-# ─────────────────────────────────────────
+
 X_train, X_test, yc_train, yc_test = train_test_split(
     X, y_class, test_size=0.2, random_state=42, stratify=y_class)
 
@@ -63,21 +49,13 @@ _, _, yr_train, yr_test = train_test_split(
 
 print(f"\nTrain size: {len(X_train):,} | Test size: {len(X_test):,}")
 
-# ─────────────────────────────────────────
-# 4. SCALING
-# ─────────────────────────────────────────
 scaler = StandardScaler()
 X_train_sc = scaler.fit_transform(X_train)
 X_test_sc  = scaler.transform(X_test)
 
-# ─────────────────────────────────────────
-# 5. EXPERIMENT LOG (MLflow-style dict)
-# ─────────────────────────────────────────
+
 experiment_log = {"classification": [], "regression": []}
 
-# ─────────────────────────────────────────
-# 6. CLASSIFICATION MODELS
-# ─────────────────────────────────────────
 print("\n" + "-" * 40)
 print("CLASSIFICATION: Good Investment")
 print("-" * 40)
@@ -119,7 +97,7 @@ for name, model in clf_models.items():
         best_clf = model
         best_clf_name = name
 
-print(f"\n  ✅ Best Classifier: {best_clf_name} (F1={best_clf_score:.4f})")
+print(f"\n Best Classifier: {best_clf_name} (F1={best_clf_score:.4f})")
 
 # Feature importance for RF
 if hasattr(best_clf, 'feature_importances_'):
@@ -131,9 +109,7 @@ if hasattr(best_clf, 'feature_importances_'):
     os.makedirs('models', exist_ok=True)
     fi.to_json('models/clf_feature_importance.json')
 
-# ─────────────────────────────────────────
-# 7. REGRESSION MODELS
-# ─────────────────────────────────────────
+
 print("\n" + "-" * 40)
 print("REGRESSION: Future Price (5 Years)")
 print("-" * 40)
@@ -148,7 +124,7 @@ best_reg = None
 best_reg_score = float('inf')
 best_reg_name  = ""
 
-# Use same X (includes Price_in_Lakhs which is known at prediction time)
+
 X_train_r, X_test_r, yr_train2, yr_test2 = train_test_split(
     X, y_reg, test_size=0.2, random_state=42)
 X_train_r_sc = scaler.transform(X_train_r)
@@ -182,7 +158,7 @@ for name, model in reg_models.items():
         best_reg = model
         best_reg_name = name
 
-print(f"\n  ✅ Best Regressor: {best_reg_name} (RMSE={best_reg_score:.4f})")
+print(f"\n Best Regressor: {best_reg_name} (RMSE={best_reg_score:.4f})")
 
 if hasattr(best_reg, 'feature_importances_'):
     fi_r = pd.Series(best_reg.feature_importances_, index=FEATURES)
@@ -190,17 +166,13 @@ if hasattr(best_reg, 'feature_importances_'):
     print("\n  Top 10 Feature Importances (Regression):")
     print(fi_r.round(4).to_string())
     fi_r.to_json('models/reg_feature_importance.json')
-# ─────────────────────────────────────────
-# 8. SAVE EXPERIMENT LOG (MLflow substitute)
-# ─────────────────────────────────────────
+
 log_path = 'models/experiment_log.json'
 with open(log_path, 'w') as f:
     json.dump(experiment_log, f, indent=2)
 print(f"\n[4] Experiment log saved → {log_path}")
 
-# ─────────────────────────────────────────
-# 9. SAVE BEST MODELS & SCALER
-# ─────────────────────────────────────────
+
 with open('models/best_classifier.pkl', 'wb') as f:
     pickle.dump(best_clf, f)
 with open('models/best_regressor.pkl', 'wb') as f:
@@ -208,7 +180,7 @@ with open('models/best_regressor.pkl', 'wb') as f:
 with open('models/scaler.pkl', 'wb') as f:
     pickle.dump(scaler, f)
 
-# Save feature list & encodings metadata
+
 meta = {
     "features": FEATURES,
     "best_classifier": best_clf_name,
