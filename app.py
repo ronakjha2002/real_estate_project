@@ -270,7 +270,10 @@ if page == "🔮 Investment Predictor":
         annual_return= (((future_price / price_lakhs) ** (1/5)) - 1) * 100
         r1, r2, r3 = st.columns(3)
         with r1:
-            st.success("✅ **GOOD INVESTMENT**") if clf_pred == 1 else st.error("❌ **NOT A GOOD INVESTMENT**")
+             if clf_pred == 1:
+                 st.success("✅ **GOOD INVESTMENT**")
+             else:
+                 st.error("❌ **NOT A GOOD INVESTMENT**")
             st.metric("Confidence", f"{confidence:.1f}%")
         with r2:
             st.info(f"### ₹ {future_price:.1f} Lakhs\n**Estimated Price After 5 Years**")
