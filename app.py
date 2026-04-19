@@ -49,12 +49,8 @@ def _train_and_save():
 
     import gdown
     if not os.path.exists('india_housing_prices.xlsx'):
-        gdown.download(
-            id="1eAUbX5-N2WjRMl_rfrgMA3RjN0mCcqDc",
-            output='india_housing_prices.xlsx',
-            quiet=False,
-            fuzzy=True
-        )
+        url = "https://drive.google.com/uc?export=download&confirm=t&id=1eAUbX5-N2WjRMl_rfrgMA3RjN0mCcqDc"
+        gdown.download(url, 'india_housing_prices.xlsx', quiet=False)
     df = pd.read_excel('india_housing_prices.xlsx')
     df.drop_duplicates(inplace=True)
     for col in ['Price_in_Lakhs', 'Size_in_SqFt', 'Price_per_SqFt']:
