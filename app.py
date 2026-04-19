@@ -274,7 +274,7 @@ if page == "🔮 Investment Predictor":
                  st.success("✅ **GOOD INVESTMENT**")
              else:
                  st.error("❌ **NOT A GOOD INVESTMENT**")
-            st.metric("Confidence", f"{confidence:.1f}%")
+        st.metric("Confidence", f"{confidence:.1f}%")
         with r2:
             st.info(f"### ₹ {future_price:.1f} Lakhs\n**Estimated Price After 5 Years**")
         with r3:
